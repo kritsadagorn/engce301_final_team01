@@ -15,7 +15,7 @@ export class AppError extends React.Component {
   };
 
   componentDidCatch = (error, info) => {
-    this.setState({ error, info });
+    this.setState({ error, info }); 
   };
 
   render() {

@@ -1,23 +1,24 @@
 import React from 'react'
 
-export const Users = ({users}) => {
+export const Movies = ({movies}) => {
 
-    console.log('users length:::', users.length)
-    if (users.length === 0) return null
+    console.log('movies length:::', movies.length)
+    if (movies.length === 0) return null
 
-    const UserRow = (user,index) => {
+    const MovieRow = (movie,index) => {
 
         return(
               <tr key = {index} className={index%2 === 0?'odd':'even'}>
                   <td>{index + 1}</td>
-                  <td>{user.firstName}</td>
-                  <td>{user.lastName}</td>
-                  <td>{user.email}</td>
+                  <td>{movie.title}</td>
+                  <td>{movie.genre}</td>
+                  <td>{movie.director}</td>
+                  <td>{movie.release_year}</td>
               </tr>
           )
     }
 
-    const userTable = users.map((user,index) => UserRow(user,index))
+    const movieTable = movies.map((movie,index) => MovieRow(movie,index))
 
     return(
         <div className="container">
@@ -25,14 +26,15 @@ export const Users = ({users}) => {
             <table className="table table-bordered">
                 <thead>
                 <tr>
-                    <th>Movie Title</th>
+                    <th>Movie Id</th>
+                    <th>Title</th>
                     <th>Genre</th>
                     <th>Director</th>
-                    <th>Release Year</th>
+                    <th>Release</th>
                 </tr>
                 </thead>
                 <tbody>
-                    {userTable}
+                    {movieTable}
                 </tbody>
             </table>
         </div>
