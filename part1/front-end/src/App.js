@@ -23,7 +23,7 @@ function App() {
     createMovie(movie)
       .then(response => {
         console.log(response);
-        setNumberOfMovies(numberOfMovies + 1)
+        setNumberOfMovies(numberOfMovies + 1);
         fetchAllMovies(); /* */
       });
 
