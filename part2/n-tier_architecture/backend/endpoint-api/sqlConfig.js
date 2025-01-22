@@ -11,11 +11,11 @@ var dbconfig = {
             enableArithAbort: true,
             trustServerCertificate: true,
             trustedconnection:  true,
-            instancename:  '192.168.56.101'  // SQL Server instance name
+            instancename:  '192.168.56.103'  // SQL Server instance name
         }
     },
     production: {
-        server: '10.21.47.33', //CE Lab Server
+        server: '10.21.43.203', //SE Lab Server
         database:'team1_engce301_db',
         user:'team1',
         password:'P@ssw0rd',
@@ -26,7 +26,7 @@ var dbconfig = {
             enableArithAbort: true,
             trustServerCertificate: true,
             trustedconnection:  true,
-            instancename:  '10.21.47.33'  // SQL Server instance name
+            instancename:  '10.21.43.203'  // SQL Server instance name
         }
     },
 
