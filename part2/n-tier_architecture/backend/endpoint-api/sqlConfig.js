@@ -1,3 +1,5 @@
+// Setup Local & Server
+
 var dbconfig = {
     development: {
         server: '192.168.56.103',
