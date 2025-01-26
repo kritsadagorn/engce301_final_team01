@@ -1,3 +1,4 @@
+// นำเข้าโมดูลต่างๆ ที่ใช้ในการสร้างเว็บเซิร์ฟเวอร์
 const hapi = require("@hapi/hapi");
 let express = require("express");
 const AuthBearer = require("hapi-auth-bearer-token");
@@ -7,38 +8,42 @@ let cors = require("cors");
 const OnlineAgent = require("./repository/OnlineAgent");
 
 //-------------------------------------
-
+// ปิดการตรวจสอบใบรับรอง SSL ในการเชื่อมต่อ
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
+// กำหนดพอร์ตของ API
 const apiport = 8443;
 
 var url = require("url");
 const { request, Agent } = require("http");
 const { unauthorized } = require("@hapi/boom");
 
-//init Express
+// เริ่มต้น Express
 var app = express();
-//init Express Router
+// สร้าง Router สำหรับ Express
 var router = express.Router();
-//var port = process.env.PORT || 87;
 
-//REST route for GET /status
+// เชื่อมต่อ router เข้ากับ Express
+app.use("/", router);
+
+
+// ใช้ @hapi รัน Express ทำไม?
 router.get("/status", function (req, res) {
   res.json({
     status: "App is running!",
   });
 });
 
-//connect path to router
-app.use("/", router);
 
 //----------------------------------------------
 
+// ฟังก์ชันสำหรับเริ่มต้นเซิร์ฟเวอร์ Hapi
 const init = async () => {
-  //process.setMaxListeners(0);
+  // ปรับการตั้งค่าให้รองรับ Listener สูงสุด
   require("events").defaultMaxListeners = 0;
   process.setMaxListeners(0);
 
+  // กำหนดไฟล์ที่ใช้สำหรับการเข้ารหัส TLS (SSL)
   var fs = require("fs");
 
   var tls = {
@@ -46,14 +51,11 @@ const init = async () => {
     cert: fs.readFileSync("server.crt"),
   };
 
-  //const server = Hapi.Server({
+  // สร้างเซิร์ฟเวอร์ Hapi ด้วยการตั้งค่า TLS
   const server = hapi.Server({
     port: apiport,
     host: "0.0.0.0",
     tls: tls,
-    //routes: {
-    //    cors: true
-    //}
     routes: {
       cors: {
         origin: ["*"],
@@ -74,16 +76,17 @@ const init = async () => {
     },
   });
 
+  // ลงทะเบียน Plugin สำหรับการให้บริการไฟล์สถิติ
   await server.register(require("@hapi/inert"));
 
+  // ลงทะเบียน Plugin สำหรับการตรวจสอบ Bearer Token
   await server.register(AuthBearer);
 
+  // ตั้งค่าการยืนยันตัวตนด้วย Bearer Token
   server.auth.strategy("simple", "bearer-access-token", {
-    allowQueryToken: true, // optional, false by default
-    unauthorized: () => unauthorized("Invalid Auth key."),
+    allowQueryToken: true, // สามารถใช้ token ใน query ได้
+    unauthorized: () => unauthorized("Invalid Auth key."), // กรณีที่ไม่มีการตรวจสอบ token
     validate: async (request, token, h) => {
-      // here is where you validate your token
-      // comparing with token from your database for example
       const isValid =
         token ===
         "1aaZ!ARgAQGuQzp00D5D000000.mOv2jmhXkfIsjgywpCIh7.HZpc6vED1LCbc90DTaVDJwdNqbTW5r4uZicv8AFfkOE1ialqnR8UN5.wnAgh090h";
@@ -95,10 +98,12 @@ const init = async () => {
     },
   });
 
+  // ตั้งค่าการยืนยันตัวตนเริ่มต้น
   server.auth.default("simple");
 
-  //-- Route ------
+  //-- การตั้งค่า Route สำหรับ API --------
 
+  // เส้นทางหลักสำหรับ API ที่ให้บริการข้อความทดสอบ
   server.route({
     method: "GET",
     path: "/",
@@ -122,8 +127,6 @@ const init = async () => {
     },
     handler: async (request, h) => {
       try {
-        //console.log('CORS request.info:');
-        //console.log(request.info.cors);
         return "Test Hello, from Endpoint Web Report API.";
       } catch (err) {
         console.dir(err);
@@ -131,8 +134,7 @@ const init = async () => {
     },
   });
 
-  //-------- Code continue here -------------------
-
+  // เส้นทาง API สำหรับดึงข้อมูล Agent ด้วย agentcode
   server.route({
     method: "GET",
     path: "/api/v1/getOnlineAgentByAgentCode",
@@ -185,6 +187,7 @@ const init = async () => {
     },
   });
 
+  // เส้นทาง API สำหรับเพิ่มหรืออัพเดทข้อมูล Agent
   server.route({
     method: "POST",
     path: "/api/v1/postOnlineAgentStatus", // Fixed the missing leading slash
@@ -214,7 +217,7 @@ const init = async () => {
         } else {
           const responsedata =
             await OnlineAgent.OnlineAgentRepo.getOnlineAgentByAgentCode(
-              `${AgentCode}`
+              `${AgentCode}` 
             );
 
           if (responsedata.statusCode == 500)
@@ -250,7 +253,7 @@ const init = async () => {
     },
   });
 
-  // Add more function
+  // จัดการข้อผิดพลาดจากการร้องขอ
   server.ext("onPreResponse", (req, h) => {
     const response = req.response;
 
@@ -274,6 +277,7 @@ const init = async () => {
   console.log("Webreport API Server running on %s", server.info.uri);
 };
 
+// ฟังข้อผิดพลาดที่ไม่จับ
 process.on("unhandledRejection", (err) => {
   console.log(err);
   process.exit(1);
