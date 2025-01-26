@@ -13,7 +13,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const apiport = 8443;
 
 var url = require("url");
-const { request } = require("http");
+const { request, Agent } = require("http");
 const { unauthorized } = require("@hapi/boom");
 
 //init Express
@@ -185,6 +185,71 @@ const init = async () => {
     },
   });
 
+  server.route({
+    method: "POST",
+    path: "/api/v1/postOnlineAgentStatus", // Fixed the missing leading slash
+    config: {
+      cors: {
+        origin: ["*"],
+        headers: [
+          "Access-Control-Allow-Headers",
+          "Access-Control-Allow-Origin",
+          "Accept",
+          "Authorization",
+          "Content-Type",
+          "If-None-Match",
+          "Accept-language",
+        ],
+        additionalHeaders: [
+          "Access-Control-Allow-Headers: Origin, Content-Type, x-ms-request-id , Authorization",
+        ],
+        credentials: true,
+      },
+    },
+    handler: async (request, h) => {
+      const { AgentCode, AgentName, IsLogin, AgentStatus } = request.payload;
+      try {
+        if (AgentCode == null) {
+          return h.response("Please provide agentcode.").code(400);
+        } else {
+          const responsedata =
+            await OnlineAgent.OnlineAgentRepo.getOnlineAgentByAgentCode(
+              `${AgentCode}`
+            );
+
+          if (responsedata.statusCode == 500)
+            return h
+              .response("Something went wrong. Please try again later.")
+              .code(500);
+
+          if (responsedata.statusCode == 404) {
+            return OnlineAgent.OnlineAgentRepo.createAgent(
+              AgentCode,
+              AgentName,
+              IsLogin,
+              AgentStatus
+            );
+          } else if (responsedata.statusCode == 200) {
+            return OnlineAgent.OnlineAgentRepo.updateAgent(
+              AgentCode,
+              AgentName,
+              IsLogin,
+              AgentStatus
+            );
+          } else if (responsedata.statusCode == 404) {
+            return h.response(responsedata).code(404);
+          } else {
+            return h
+              .response("Something went wrong. Please try again later.")
+              .code(500);
+          }
+        }
+      } catch (err) {
+        console.dir(err);
+      }
+    },
+  });
+
   // Add more function
   server.ext("onPreResponse", (req, h) => {
     const response = req.response;
@@ -195,7 +260,7 @@ const init = async () => {
       const { output } = response;
       return h
         .response({
-            error: output.payload.message,
+          error: output.payload.message,
         })
         .code(output.statusCode);
     }
