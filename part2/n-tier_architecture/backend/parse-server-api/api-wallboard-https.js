@@ -6,24 +6,31 @@ const mongoose = require('mongoose');
 var cors = require('cors');
 var fs = require('fs');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = process.env.NODE_ENV === "development" ? "0" : "1";
+
 
 const databaseUri = process.env.DATABASE_URI || process.env.MONGODB_URI;
 
-var apiport = 4000;
+var apiport = 5001;
 
 const config = {
-  databaseURI: 'mongodb://wallboard:wallboard1q2w3e4r@127.0.0.1:27017/wallboarddb',
+  databaseURI: 'mongodb://wallboarduser:WB1qazxsw2@10.21.47.33:27017/wallboarddb-team1',
   cloud: process.env.CLOUD_CODE_MAIN || __dirname + '/cloud/main.js',
   appId: process.env.APP_ID || 'wallboardapi',
   masterKey: process.env.MASTER_KEY || 'wallboardapi', //Add your master key here. Keep it secret!
   clientKey: 'wallboardapi',
   javascriptKey: 'wallboardapi',
-  serverURL: 'https://192.168.56.10:' + apiport + '/api', // Don't forget to change to https if needed
-  publicServerURL: 'https://192.168.56.10:' + apiport + '/api',
+  serverURL: 'https://lab-parse-server.cpe-rmutl.net/team01' + '/api', // Don't forget to change to https if needed
+  publicServerURL: 'https://lab-parse-server.cpe-rmutl.net/team01' + '/api',
   liveQuery: {
     classNames: ['OnlineAgentLists', 'WallboardBanners','CallAgentSummaries'], // List of classes to support for query subscriptions
+    
   },
+  masterKeyIps: ["0.0.0.0/0", "::/0"],
+  useMasterKey: true,
+  allowClientClassCreation: false,
+  allowExpiredAuthDataToken: false,
+  // encodeParseObjectInCloudFunction: false
 };
 
 const app = express();
@@ -42,8 +49,11 @@ var options = {
   key: fs.readFileSync('server.key'),
   cert: fs.readFileSync('server.crt')
 };
+api.start();
 
-app.use(mountPath, api);
+app.use(mountPath, api.app);
+
+
 
 var httpsServer = require('https').createServer(options, app);
 
