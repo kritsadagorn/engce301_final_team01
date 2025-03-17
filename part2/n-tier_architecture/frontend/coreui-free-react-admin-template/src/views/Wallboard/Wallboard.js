@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import { Container } from './style'
@@ -9,11 +8,9 @@ import CallStatus from './CallStatus'
 import CenterBar from './CenterBar'
 import ReactAudioPlayer from 'react-audio-player'
 
-import wallboard_config from '../../wbconfig.js'
+import Parse from '../../parse-init.js'
 
-const wbconfig = wallboard_config[import.meta.env.PROD ? 'production' : 'development']
-
-import { Parse } from 'parse'
+import Histories from './Histories.js'
 
 export default class Wallboard extends Component {
   constructor(props) {
@@ -172,19 +169,6 @@ export default class Wallboard extends Component {
         let javascriptKey = "wallboardapi";
         let appId = "wallboardapi";
     */
-    console.log('hosturl: ' + wbconfig.hosturl)
-    console.log('wsurl: ' + wbconfig.wsurl)
-
-    let ip_connect = wbconfig.hosturl
-    let ip_ws = wbconfig.wsurl
-
-    Parse.serverURL = ip_connect
-
-    Parse.initialize(
-      wbconfig.appId, // Application ID
-      wbconfig.javascriptKey, // Javascript key
-      wbconfig.masterKey, // Javascript key
-    )
 
     let WallboardBanner = Parse.Object.extend('WallboardBanners')
     let WallboardBanners = new Parse.Query(WallboardBanner)
@@ -195,7 +179,14 @@ export default class Wallboard extends Component {
     let OnlineAgentLists = Parse.Object.extend('OnlineAgentLists')
     let queryOnlineAgentLists = new Parse.Query(OnlineAgentLists)
 
-    Parse.liveQueryServerURL = await ip_ws
+    // let UserLoginHistories = Parse.Object.extend('UserLoginHistories')
+    // let queryUserLoginHistories = new Parse.Query(UserLoginHistories)
+
+    // let AgentStatusHistories = Parse.Object.extend('AgentStatusHistories')
+    // let queryAgentStatusHistories = new Parse.Query(AgentStatusHistories)
+
+    // let AgentMessageHistories = Parse.Object.extend('AgentMessageHistories')
+    // let queryAgentMessageHistories = new Parse.Query(AgentMessageHistories)
 
     //------------ Class: WallboardBanners ----------------
 
@@ -369,6 +360,7 @@ export default class Wallboard extends Component {
           OnlineAgentList={this.state.OnlineAgentList}
           ServiceCode={this.state.ServiceCode}
         />
+        <Histories />
         <Container className="text-center">
           <ReactAudioPlayer
             src={this.state.beep}
