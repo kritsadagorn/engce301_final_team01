@@ -1,6 +1,6 @@
 # ENGCE301 - Term Project
 
-This our Solution for Term Project
+This our Solution for Term Project in ENGCE301
 
 ## Overview
 
