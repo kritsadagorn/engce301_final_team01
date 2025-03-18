@@ -36,7 +36,7 @@ Test Case สุดโหด
 
 ## **API Specification**
 
-Link to API Specification Documentation: [This Link]().
+Link to API Specification Documentation: [This Link](./docs/api/README.md).
 
 ## Our Team
 
