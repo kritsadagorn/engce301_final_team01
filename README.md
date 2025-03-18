@@ -22,9 +22,12 @@ This our Solution for Term Project
 
 ![r1.4,r2.3](https://img2.pic.in.th/pic/r1.4r2.3.png)
 
-## **DFD + ER Diagram**
+## **DFD**
 
 ![1](https://img2.pic.in.th/pic/158c2490280703cef.jpg)
+
+## **ER Diagram**
+![ER](https://img2.pic.in.th/pic/ER.jpg)
 
 ## **Activity Flow Diagram**
 
