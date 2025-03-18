@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 
 export const DateTime = () => {
   const locale = 'en'
-  //var [date,setDate] = useState(new Date());
   const [currentTime, setCurrentTime] = useState(new Date())
 
   useEffect(() => {
@@ -10,7 +9,6 @@ export const DateTime = () => {
       setCurrentTime(new Date())
     }, 1000) // Update every 1 second
 
-    // Clear the interval when the component is unmounted
     return () => clearInterval(intervalId)
   }, [])
 
@@ -24,7 +22,15 @@ export const DateTime = () => {
     return `${hours}:${minutes}      ${day}/${month}/${year}`
   }
 
-  return <div className="dateTime">{formatDate(currentTime)}</div>
+  const dateTimeStyle = {
+    color: '#3498db', // น้ำเงินสดใสเพื่อเด่นจากพื้นหลัง
+    fontSize: '1.25rem',
+    fontWeight: '600',
+    textAlign: 'right',
+    padding: '0 10px'
+  }
+
+  return <div style={dateTimeStyle}>{formatDate(currentTime)}</div>
 }
 
 export default DateTime

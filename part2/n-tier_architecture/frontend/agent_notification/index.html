@@ -17,6 +17,110 @@
       charset="utf-8"
     />
 
+    <style>
+      body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #333;
+      }
+
+      .warper {
+        max-width: 600px; /* เพิ่มจาก 450px เป็น 600px */
+        margin: 50px auto; /* เพิ่ม margin จาก 40px เป็น 50px */
+        padding: 30px; /* เพิ่ม padding จาก 25px เป็น 30px */
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px; /* เพิ่ม radius จาก 15px เป็น 20px */
+        box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+        backdrop-filter: blur(4px);
+      }
+
+      .table {
+        margin-bottom: 0;
+      }
+
+      .badge {
+        padding: 8px 16px; /* เพิ่ม padding จาก 6px 12px */
+        border-radius: 14px; /* เพิ่มจาก 12px */
+        font-weight: 500;
+        font-size: 1em; /* เพิ่มขนาดตัวอักษร */
+      }
+
+      .form-control {
+        border-radius: 10px; /* เพิ่มจาก 8px */
+        border: 1px solid #ddd;
+        padding: 10px 15px; /* เพิ่มจาก 8px 12px */
+        font-size: 1em;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+      }
+
+      .btn {
+        border-radius: 10px; /* เพิ่มจาก 8px */
+        padding: 10px 20px; /* เพิ่มจาก 8px 16px */
+        font-weight: 500;
+        font-size: 1em;
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      #dashboard {
+        animation: fadeIn 0.5s ease;
+      }
+
+      #display {
+        padding: 25px; /* เพิ่มจาก 20px */
+      }
+
+      .form-group {
+        margin-bottom: 25px; /* เพิ่มจาก 20px */
+      }
+
+      label {
+        font-weight: 500;
+        color: #444;
+        margin-bottom: 8px; /* เพิ่มจาก 6px */
+        font-size: 1.1em;
+      }
+
+      select#currentStatus {
+        width: 100%;
+        padding: 10px 15px; /* เพิ่มจาก 8px 12px */
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        background: white;
+        font-size: 1em;
+      }
+
+      .input-group {
+        gap: 15px; /* เพิ่มจาก 10px */
+      }
+
+      #connectTime {
+        color: #666;
+        font-size: 1em; /* เพิ่มจาก 0.9em */
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+
     <!----------- Code here -------------->
 
     <script language="JavaScript">
@@ -703,152 +807,111 @@
         <div class="col-12">
           <table class="table table-sm fs-6">
             <tr>
-              <div class="pt-2 pl-2 pr-2">
-                <tr>
-                  <td class="text-white">
-                    <span class="text-white" id="connectTime">Information</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="text-white">
-                    <span
-                      class="text-blue badge bg-danger"
-                      id="ConnectionStatus"
-                      >Disconnected</span
-                    >
-                    <span id="statusLabel" class="badge bg-dark">N/A</span>
-                  </td>
-                </tr>
-                <tr></tr>
-              </div>
+              <td class="text-dark">
+                <span id="connectTime">Information</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span class="badge bg-danger" id="ConnectionStatus"
+                  >Disconnected</span
+                >
+                <span id="statusLabel" class="badge bg-dark">N/A</span>
+              </td>
             </tr>
           </table>
         </div>
 
         <div class="col-12" id="dashboard">
-          <table class="table table-sm fs-6">
-            <tr>
-              <div class="row">
-                <div class="col-sm-12 text-center">
-                  <button
-                    id="buttonCall"
-                    class="btn btn-primary btn-sm shadow btn-block mt-2"
-                    disable
-                    onclick="CallOnescreen(1,'0000')"
-                  >
-                    Pop-up Chrome
-                  </button>
-
-                  <button
-                    id="NotifyBtn"
-                    class="btn btn-warning btn-sm btn-block mt-2"
-                    onclick="notify()"
-                  >
-                    Notification
-                  </button>
-
-                  <button
-                    id="buttonDisConnect"
-                    class="btn btn-danger btn-sm shadow btn-block mt-2"
-                    onclick="logoutFromAPI()"
-                  >
-                    Disconnect
-                  </button>
-
-                  <div class="input-group mt-2">
-                    <img
-                      id="help-and-support"
-                      src="./assets/icon/Help_And_Support.png"
-                      width="30px"
-                      height="30px"
-                    />
-                    <select
-                      id="currentStatus"
-                      onchange="changeAgentStatus(this)"
-                    >
-                      <option value="1">Avalible</option>
-                      <option value="2">Active</option>
-                      <option value="3">Wrap</option>
-                      <option value="4">Not Ready</option>
-                    </select>
-                  </div>
-                  <div class="input-group mt-2">
-                    <div class="col-xs-1">
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        id="destAgent"
-                        placeholder="Agent"
-                      />
-                    </div>
-
-                    <div class="col-xs-3">
-                      <input
-                        type="text"
-                        class="form-control form-control-sm"
-                        id="agentMsg"
-                        placeholder="Type message here.."
-                      />
-                    </div>
-
-                    <div class="input-group-append">
-                      <button
-                        id="SendMsgBtn"
-                        class="btn btn-warning btn-sm btn-block shadow"
-                        onclick="sendMessage()"
-                      >
-                        Send
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </tr>
-          </table>
-        </div>
-
-        <div id="display">
-          <div class="row">
+          <div class="row g-3">
             <div class="col-12">
-              <form onsubmit="return doLogin(event)">
-                <div class="form-group">
-                  <label for="exampleInputEmail1">Username</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="agent001"
-                    name="username"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Password</label>
-                  <input
-                    type="password"
-                    class="form-control"
-                    placeholder="Password"
-                    name="password"
-                  />
-                </div>
+              <button
+                id="buttonCall"
+                class="btn btn-primary w-100"
+                onclick="CallOnescreen(1,'0000')"
+              >
+                Pop-up Chrome
+              </button>
+            </div>
+            <div class="col-12">
+              <button
+                id="NotifyBtn"
+                class="btn btn-warning w-100"
+                onclick="notify()"
+              >
+                Notification
+              </button>
+            </div>
+            <div class="col-12">
+              <button
+                id="buttonDisConnect"
+                class="btn btn-danger w-100"
+                onclick="logoutFromAPI()"
+              >
+                Disconnect
+              </button>
+            </div>
+            <div class="col-12">
+              <select id="currentStatus" onchange="changeAgentStatus(this)">
+                <option value="1">Available</option>
+                <option value="2">Active</option>
+                <option value="3">Wrap</option>
+                <option value="4">Not Ready</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="destAgent"
+                  placeholder="Agent"
+                />
+                <input
+                  type="text"
+                  class="form-control"
+                  id="agentMsg"
+                  placeholder="Type message here.."
+                />
                 <button
-                  id="buttonConnect"
-                  class="btn btn-warning btn-sm btn-block shadow mt-3"
-                  style="width: 100%"
+                  id="SendMsgBtn"
+                  class="btn btn-warning"
+                  onclick="sendMessage()"
                 >
-                  Login
+                  Send
                 </button>
-              </form>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- <div class="col-md-12 text-center pt-2"></div> -->
+        <div id="display">
+          <form onsubmit="return doLogin(event)">
+            <div class="form-group">
+              <label for="username">Username</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="agent001"
+                name="username"
+              />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Password"
+                name="password"
+              />
+            </div>
+            <button id="buttonConnect" class="btn btn-warning w-100 mt-3">
+              Login
+            </button>
+          </form>
+        </div>
       </div>
     </div>
-
-    <script>
-      // You can also require other files to run in this process
-      // require('./renderer.js')
-    </script>
   </body>
 </html>
 

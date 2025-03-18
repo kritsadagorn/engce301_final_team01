@@ -10,7 +10,6 @@ const CallStatus = ({ OnlineAgentList, CallAgentSummaries, ServiceCode, CallQueu
 
   Object.keys(CallAgentSummaries).map((queueName) => {
     const item = CallAgentSummaries[queueName]
-
     if (ServiceCode === 'ALL') {
       callOffer += parseInt(item.CallOffer)
       CallAbandon += parseInt(item.CallAbandon)
@@ -20,68 +19,67 @@ const CallStatus = ({ OnlineAgentList, CallAgentSummaries, ServiceCode, CallQueu
     }
   })
 
-  let Counter = 0
-
-  if (ServiceCode === 'ALL') {
-    Counter = OnlineAgentList.length
-  } else {
-    const list = OnlineAgentList.filter((item) => {
-      return item.Queue === ServiceCode
-    })
-
-    Counter = list.length
-  }
+  let Counter = ServiceCode === 'ALL' 
+    ? OnlineAgentList.length 
+    : OnlineAgentList.filter(item => item.Queue === ServiceCode).length
 
   let QueueCounter = 0
-
-  if (ServiceCode === 'ALL') {
-    CallQueueList.map((item) => {
+  CallQueueList.map((item) => {
+    if (ServiceCode === 'ALL' || item.Queue === ServiceCode) {
       QueueCounter += parseInt(item.ConcurrentCall)
-    })
-  } else {
-    CallQueueList.map((item) => {
-      if (item.Queue === ServiceCode) {
-        QueueCounter += parseInt(item.ConcurrentCall)
-      }
-    })
+    }
+  })
+
+  const cardStyle = {
+    background: 'linear-gradient(135deg, #2a303c, #252a34)', // เทาเข้มกลมกลืนกับพื้นหลัง
+    borderRadius: '12px',
+    padding: '15px',
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)',
+    transition: 'transform 0.2s ease-in-out',
+    '&:hover': { transform: 'translateY(-5px)' }
+  }
+
+  const iconStyle = {
+    fontSize: '2rem',
+    marginRight: '10px'
+  }
+
+  const statStyle = {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: '#ffffff' // ขาวเพื่อ contrast กับพื้นหลัง
   }
 
   return (
-    <CallStatusContainer>
-      <div className="offerCall group">
-        <div className="label">Offer Call</div>
-        <div className="counter">
-          <div className="icon">
-            <PhoneCallbackIcon />
+    <CallStatusContainer style={{ backgroundColor: '#1d222b', padding: '20px' }} className="py-4">
+      <div className="d-flex justify-content-between flex-wrap gap-4">
+        <div className="group" style={cardStyle}>
+          <div className="label fw-bold mb-2" style={{ color: '#bdc3c7' }}>Offer Call</div>
+          <div className="counter d-flex align-items-center">
+            <PhoneCallbackIcon style={{ ...iconStyle, color: '#2ecc71' }} />
+            <div style={statStyle}>{callOffer}</div>
           </div>
-          <div className="statis">{callOffer}</div>
         </div>
-      </div>
-      <div className="abandon_call group">
-        <div className="label">Abandon Call</div>
-        <div className="counter">
-          <div className="icon">
-            <PhoneMissedIcon />
+        <div className="group" style={cardStyle}>
+          <div className="label fw-bold mb-2" style={{ color: '#bdc3c7' }}>Abandon Call</div>
+          <div className="counter d-flex align-items-center">
+            <PhoneMissedIcon style={{ ...iconStyle, color: '#e74c3c' }} />
+            <div style={statStyle}>{CallAbandon}</div>
           </div>
-          <div className="statis">{CallAbandon}</div>
         </div>
-      </div>
-      <div className="logged_agent group">
-        <div className="label">Agents</div>
-        <div className="counter">
-          <div className="icon">
-            {' '}
-            <RecordVoiceOverIcon />{' '}
+        <div className="group" style={cardStyle}>
+          <div className="label fw-bold mb-2" style={{ color: '#bdc3c7' }}>Agents</div>
+          <div className="counter d-flex align-items-center">
+            <RecordVoiceOverIcon style={{ ...iconStyle, color: '#3498db' }} />
+            <div style={statStyle}>{Counter}</div>
           </div>
-          <div className="statis">{Counter}</div>
         </div>
-      </div>
-
-      <div className="total_call_queue group">
-        <div className="label"> Total Queue</div>
-        <div className="counter">
-          <div className="icon"> </div>
-          <div className="statis">{QueueCounter}</div>
+        <div className="group" style={cardStyle}>
+          <div className="label fw-bold mb-2" style={{ color: '#bdc3c7' }}>Total Queue</div>
+          <div className="counter d-flex align-items-center">
+            <div style={{ ...iconStyle, color: '#9b59b6' }}></div>
+            <div style={statStyle}>{QueueCounter}</div>
+          </div>
         </div>
       </div>
     </CallStatusContainer>

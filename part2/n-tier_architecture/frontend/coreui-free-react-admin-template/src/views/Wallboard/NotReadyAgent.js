@@ -6,8 +6,8 @@ const agentStatus = {
   5: { status: 'Toilet', min: 30 },
   6: { status: 'Training', min: 60 },
   7: { status: 'Meeting', min: 60 },
-  8: { status: 'Spicial Assigned,', min: 30 },
-  9: { status: 'System down', min: false },
+  8: { status: 'Special Assigned', min: 30 },
+  9: { status: 'System Down', min: false },
   10: { status: 'Coaching', min: false },
   11: { status: 'Sick', min: false },
   12: { status: 'Outbound Call', min: false },
@@ -19,50 +19,50 @@ const agentStatus = {
 export const msToTimeFor4 = (time, limit, agent, style, id, AgentStatusCode) => {
   console.log('msToTimeFor4[AgentStatusCode]: ', AgentStatusCode)
 
-  var s = Date.now({ timeZone: 'Asia/Jakarta' }) - time
-  var styleFont = 'text-secondary'
-  var styleFontAgent = 'text-secondary d-inline-block text-truncate'
-  function pad(n, z) {
-    z = z || 2
+  const s = Date.now({ timeZone: 'Asia/Jakarta' }) - time
+  let styleFont = 'text-light' // เปลี่ยนจาก text-secondary เป็น text-light เพื่อให้เข้ากับพื้นหลังเข้ม
+  let styleFontAgent = 'text-light d-inline-block text-truncate'
+  
+  function pad(n, z = 2) {
     return ('00' + n).slice(-z)
   }
-  if (limit != 'false') {
+
+  if (limit !== 'false') {
     if (parseInt(s) >= parseInt(limit) * 60000) {
-      styleFont = style
-      styleFontAgent = style + ' d-inline-block text-truncate'
+      styleFont = style || 'text-warning' // Default เป็น warning ถ้าเกินเวลา
+      styleFontAgent = `${style || 'text-warning'} d-inline-block text-truncate`
     }
   }
 
-  var ms = s % 1000
-  s = (s - ms) / 1000
-  var secs = s % 60
-  s = (s - secs) / 60
-  var mins = s % 60
-  var hrs = (s - mins) / 60
+  const ms = s % 1000
+  let secs = Math.floor((s - ms) / 1000)
+  let mins = Math.floor(secs / 60)
+  secs = secs % 60
+  let hrs = Math.floor(mins / 60)
+  mins = mins % 60
 
   const status = AgentStatusCode ? agentStatus[AgentStatusCode] : false
-
-  let color = '#333'
+  let color = '#e0e0e0' // สีเทาอ่อนเป็น default
   if (status && status.min) {
     const min = status.min
     if (hrs > 1 || mins > min) {
-      color = 'red'
+      color = '#e74c3c' // แดงเมื่อเกินเวลา
     }
   }
 
   return (
-    <tr key={id}>
+    <tr key={id} style={{ backgroundColor: '#2a303c', borderBottom: '1px solid #ffffff1a' }}>
       <td key={'F' + id}>
         <small className={styleFontAgent} style={{ maxWidth: '200px' }}>
-          <div style={{ color: `${color}`, padding: 5, paddingTop: 10, fontSize: '14px' }}>
-            <BsFillPersonFill /> {agent} {status ? `(${status.status})` : ''}{' '}
+          <div style={{ color, padding: '5px 0 5px 5px', fontSize: '14px' }}>
+            <BsFillPersonFill style={{ marginRight: '5px' }} /> {agent} {status ? `(${status.status})` : ''}
           </div>
         </small>
       </td>
       <td className="text-right" key={'S' + id}>
         <small>
           <span className={styleFont}>
-            <div style={{ color: `${color}`, padding: 5, paddingTop: 10, fontSize: '14px' }}>
+            <div style={{ color, padding: '5px 5px 5px 0', fontSize: '14px' }}>
               {pad(hrs)}:{pad(mins)}:{pad(secs)}
             </div>
           </span>
@@ -73,40 +73,41 @@ export const msToTimeFor4 = (time, limit, agent, style, id, AgentStatusCode) => 
 }
 
 export const msToTime = (time, limit, agent, style, id) => {
-  var s = Date.now({ timeZone: 'Asia/Jakarta' }) - time
-  var styleFont = 'text-secondary'
-  var styleFontAgent = 'text-secondary d-inline-block text-truncate'
-  function pad(n, z) {
-    z = z || 2
+  const s = Date.now({ timeZone: 'Asia/Jakarta' }) - time
+  let styleFont = 'text-light' // เปลี่ยนจาก text-secondary
+  let styleFontAgent = 'text-light d-inline-block text-truncate'
+  
+  function pad(n, z = 2) {
     return ('00' + n).slice(-z)
   }
-  if (limit != 'false') {
+
+  if (limit !== 'false') {
     if (parseInt(s) >= parseInt(limit) * 60000) {
-      styleFont = style
-      styleFontAgent = style + ' d-inline-block text-truncate'
+      styleFont = style || 'text-warning'
+      styleFontAgent = `${style || 'text-warning'} d-inline-block text-truncate`
     }
   }
 
-  var ms = s % 1000
-  s = (s - ms) / 1000
-  var secs = s % 60
-  s = (s - secs) / 60
-  var mins = s % 60
-  var hrs = (s - mins) / 60
+  const ms = s % 1000
+  let secs = Math.floor((s - ms) / 1000)
+  let mins = Math.floor(secs / 60)
+  secs = secs % 60
+  let hrs = Math.floor(mins / 60)
+  mins = mins % 60
 
   return (
-    <tr key={id}>
+    <tr key={id} style={{ backgroundColor: '#2a303c', borderBottom: '1px solid #ffffff1a' }}>
       <td key={'F' + id}>
         <small className={styleFontAgent} style={{ maxWidth: '200px' }}>
-          <div style={{ color: '#333', padding: 5, paddingTop: 10, fontSize: '14px' }}>
-            <BsFillPersonFill style={{ fontSize: '14px' }} /> {agent}
+          <div style={{ color: '#000', padding: '5px 0 5px 5px', fontSize: '14px' }}>
+            <BsFillPersonFill style={{ marginRight: '5px' }} /> {agent}
           </div>
         </small>
       </td>
       <td className="text-right" key={'S' + id}>
         <small>
           <span className={styleFont}>
-            <div style={{ color: '#333', padding: 5, paddingTop: 10, fontSize: '14px' }}>
+            <div style={{ color: '#000', padding: '5px 5px 5px 0', fontSize: '14px' }}>
               {pad(hrs)}:{pad(mins)}:{pad(secs)}
             </div>
           </span>

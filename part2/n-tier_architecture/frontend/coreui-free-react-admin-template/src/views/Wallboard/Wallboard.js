@@ -102,24 +102,6 @@ export default class Wallboard extends Component {
     })
   }
 
-  /*
-  updateOnlineAgentList(object) {
-    const updatedAgent = {
-      AgentCode: object.get("AgentCode"),
-      AgentName: object.get("AgentName"),
-      AgentStatus: object.get("AgentStatus"),
-      AgentTime: Date.parse(object.get("startedAt")),
-    };
-  
-    this.setState((prevState) => ({
-      OnlineAgentList: prevState.OnlineAgentList.map((agent) =>
-        agent.AgentCode === updatedAgent.AgentCode ? updatedAgent : agent
-      ),
-    }));
-  }
-
-*/
-
   deleteOnlineAgentList(id) {
     let arr = this.state.OnlineAgentList
 
@@ -136,16 +118,16 @@ export default class Wallboard extends Component {
     }
   }
 
-  onlineTimeStyle(nornal, warning, timeValue) {
-    let time_normal = nornal * 60000,
+  onlineTimeStyle(normal, warning, timeValue) {
+    let time_normal = normal * 60000,
       time_warning = warning * 60000
 
     if (timeValue < time_normal) {
-      return 'text-dark'
+      return 'text-success'
     } else if (timeValue < time_warning) {
-      return 'text-dark'
+      return 'text-warning'
     } else {
-      return 'text-dark'
+      return 'text-danger'
     }
   }
 
@@ -156,20 +138,12 @@ export default class Wallboard extends Component {
         return true
       }
     }
+    return false
   }
 
   //-----------------------------------------------
 
   async get_data() {
-    /*
-        let hosturl = "https://192.168.56.10:4000/api";
-        let wsurl = "wss://192.168.56.10:4000";
-        let masterKey = "wallboardapi";
-        let clientKey = "wallboardapi";
-        let javascriptKey = "wallboardapi";
-        let appId = "wallboardapi";
-    */
-
     let WallboardBanner = Parse.Object.extend('WallboardBanners')
     let WallboardBanners = new Parse.Query(WallboardBanner)
 
@@ -178,15 +152,6 @@ export default class Wallboard extends Component {
 
     let OnlineAgentLists = Parse.Object.extend('OnlineAgentLists')
     let queryOnlineAgentLists = new Parse.Query(OnlineAgentLists)
-
-    // let UserLoginHistories = Parse.Object.extend('UserLoginHistories')
-    // let queryUserLoginHistories = new Parse.Query(UserLoginHistories)
-
-    // let AgentStatusHistories = Parse.Object.extend('AgentStatusHistories')
-    // let queryAgentStatusHistories = new Parse.Query(AgentStatusHistories)
-
-    // let AgentMessageHistories = Parse.Object.extend('AgentMessageHistories')
-    // let queryAgentMessageHistories = new Parse.Query(AgentMessageHistories)
 
     //------------ Class: WallboardBanners ----------------
 
@@ -197,24 +162,6 @@ export default class Wallboard extends Component {
       Queue: item.get('Queue'),
       BannerText: item.get('BannerText'),
     }))
-
-    /*
-    banner:{
-        {
-          Queue: '1',
-          BannerText: 'ทดสอบ1'
-        },
-        {
-          Queue: '2',
-          BannerText: 'ทดสอบ2x'
-        },
-        {
-          Queue: '3',
-          BannerText: 'ทดสอบ3'
-        },
-    }
-    }
-    */
 
     this.setState({ WallboardBanner: banner })
 
@@ -330,6 +277,142 @@ export default class Wallboard extends Component {
       status: true,
     })
     this.get_data()
+    
+    // Add dark theme styles
+    document.body.style.backgroundColor = '#1d222b'
+    document.body.style.color = '#e0e0e0'
+    
+    // Add custom styles for dark theme
+    const style = document.createElement('style')
+    style.textContent = `
+      .card {
+        background-color: #2d3748 !important;
+        border-color: #4a5568 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        margin-bottom: 1rem !important;
+      }
+      
+      .card-header {
+        background-color: #2d3748 !important;
+        border-bottom: 1px solid #4a5568 !important;
+        padding: 0.75rem 1.25rem !important;
+      }
+      
+      .card-body {
+        padding: 1rem !important;
+      }
+      
+      .table {
+        color: #e0e0e0 !important;
+      }
+      
+      .table thead th {
+        border-bottom: 2px solid #4a5568 !important;
+        background-color: #2d3748 !important;
+        color: #90cdf4 !important;
+      }
+      
+      .table td, .table th {
+        border-top: 1px solid #4a5568 !important;
+        padding: 0.75rem !important;
+      }
+      
+      .badge {
+        padding: 0.5em 0.75em !important;
+        font-size: 0.85em !important;
+        font-weight: 600 !important;
+        border-radius: 0.25rem !important;
+      }
+      
+      .badge-success {
+        background-color: #38a169 !important;
+      }
+      
+      .badge-warning {
+        background-color: #d69e2e !important;
+        color: #1a202c !important;
+      }
+      
+      .badge-danger {
+        background-color: #e53e3e !important;
+      }
+      
+      .badge-info {
+        background-color: #4299e1 !important;
+      }
+      
+      .badge-primary {
+        background-color: #4c51bf !important;
+      }
+      
+      .badge-secondary {
+        background-color: #718096 !important;
+      }
+      
+      .btn {
+        border-radius: 0.25rem !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 600 !important;
+        transition: all 0.2s !important;
+      }
+      
+      .btn-primary {
+        background-color: #4c51bf !important;
+        border-color: #4c51bf !important;
+      }
+      
+      .btn-primary:hover {
+        background-color: #434190 !important;
+        border-color: #434190 !important;
+      }
+      
+      .dropdown-menu {
+        background-color: #2d3748 !important;
+        border-color: #4a5568 !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+      }
+      
+      .dropdown-item {
+        color: #e0e0e0 !important;
+      }
+      
+      .dropdown-item:hover, .dropdown-item:focus {
+        background-color: #4a5568 !important;
+        color: #ffffff !important;
+      }
+      
+      .text-dark {
+        color: #e0e0e0 !important;
+      }
+      
+      .alert {
+        border-radius: 0.25rem !important;
+        padding: 0.75rem 1.25rem !important;
+        margin-bottom: 1rem !important;
+      }
+      
+      .form-control {
+        background-color: #2d3748 !important;
+        border-color: #4a5568 !important;
+        color: #e0e0e0 !important;
+      }
+      
+      .form-control:focus {
+        border-color: #4c51bf !important;
+        box-shadow: 0 0 0 0.2rem rgba(76, 81, 191, 0.25) !important;
+      }
+      
+      .form-control::placeholder {
+        color: #a0aec0 !important;
+      }
+    `
+    document.head.appendChild(style)
+  }
+  
+  componentWillUnmount() {
+    // Remove custom styles when component unmounts
+    document.body.style.backgroundColor = ''
+    document.body.style.color = ''
   }
 
   handleServiceCodeChange(newServiceCode) {

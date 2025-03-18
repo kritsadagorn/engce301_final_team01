@@ -1,202 +1,77 @@
-import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+import React from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import { Parse } from 'parse'
 import { Row, Col } from 'react-bootstrap'
-import { BsFillPersonFill } from 'react-icons/bs'
 import { Container } from './style'
 import { msToTime, msToTimeFor4 } from './NotReadyAgent'
-import { useState } from 'react'
-import { useEffect } from 'react'
-
-const wbenv = process.env.NODE_ENV
 
 const Agentonline = ({ OnlineAgentList, ServiceCode }) => {
+  const statusStyles = {
+    available: { bg: '#2ecc71', text: '#ffffff' }, // เขียวสดใส
+    active: { bg: '#3498db', text: '#ffffff' },    // น้ำเงิน
+    wrap: { bg: '#f1c40f', text: '#1d222b' },     // เหลือง
+    notReady: { bg: '#e74c3c', text: '#ffffff' }  // แดง
+  }
+
+  const tableStyle = {
+    borderRadius: '8px',
+    overflow: 'hidden',
+    backgroundColor: '#2a303c', // เทาเข้มอ่อนกว่าพื้นหลัง
+    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+    transition: 'all 0.3s ease'
+  }
+
+  const renderAgentTable = (title, statusCode, style) => (
+    <Col md={3}>
+      <table className="table table-sm border-0 shadow-sm mb-4" style={tableStyle}>
+        <thead>
+          <tr>
+            <th 
+              colSpan="2" 
+              className="text-center py-3"
+              style={{ 
+                backgroundColor: style.bg, 
+                color: style.text,
+                fontSize: '1.25rem', 
+                fontWeight: '600' 
+              }}
+            >
+              {title}
+            </th>
+          </tr>
+        </thead>
+        <tbody style={{ color: '#e0e0e0' }}> {/* สีเทาอ่อนสำหรับข้อความ */}
+          {ServiceCode === 'ALL'
+            ? Object.keys(OnlineAgentList).map((key) => {
+                const agent = OnlineAgentList[key]
+                if (parseInt(agent.AgentStatus) === statusCode) {
+                  return statusCode === 4 
+                    ? msToTimeFor4(agent.AgentTime, 'false', agent.AgentName, '', agent.AgentCode, parseInt(agent.AgentStatusCode))
+                    : msToTime(agent.AgentTime, 'false', agent.AgentName, '', agent.AgentCode)
+                }
+                return null
+              })
+            : Object.keys(OnlineAgentList).map((key) => {
+                const agent = OnlineAgentList[key]
+                if (parseInt(agent.AgentStatus) === statusCode && agent.Queue === ServiceCode) {
+                  return statusCode === 4 
+                    ? msToTimeFor4(agent.AgentTime, 'false', agent.AgentName, '', agent.AgentCode, agent.AgentStatusCode)
+                    : msToTime(agent.AgentTime, 'false', agent.AgentName, '', agent.AgentCode)
+                }
+                return null
+              })}
+        </tbody>
+      </table>
+    </Col>
+  )
+
   return (
-    <div>
-      <Container className="mt-3">
-        <Row>
-          <Col md={3}>
-            <table className="table table-sm border shadow-sm bg-light">
-              <thead>
-                <tr>
-                  <th
-                    colSpan="2"
-                    className="bg-success text-light text-center"
-                    style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-                  >
-                    Available Agent
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ServiceCode === 'ALL'
-                  ? Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (parseInt(agent.AgentStatus) === 1) {
-                        return msToTime(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                        )
-                      }
-                    })
-                  : Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (parseInt(agent.AgentStatus) === 1 && agent.Queue === ServiceCode) {
-                        return msToTime(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                        )
-                      }
-                    })}
-              </tbody>
-            </table>
-          </Col>
-          <Col md={3}>
-            <table className="table table-sm border shadow-sm bg-light">
-              <thead>
-                <tr>
-                  <th
-                    colSpan="2"
-                    className="bg-info text-light text-center"
-                    style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-                  >
-                    Active Agent
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ServiceCode === 'ALL'
-                  ? Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (parseInt(agent.AgentStatus) === 2) {
-                        return msToTime(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                        )
-                      }
-                    })
-                  : Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (parseInt(agent.AgentStatus) === 2 && agent.Queue === ServiceCode) {
-                        return msToTime(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                        )
-                      }
-                    })}
-              </tbody>
-            </table>
-          </Col>
-          <Col md={3}>
-            <table className="table table-sm border shadow-sm bg-light">
-              <thead>
-                <tr>
-                  <th
-                    colSpan="2"
-                    className="bg-warning text-center"
-                    style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-                  >
-                    Wrap Agent
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ServiceCode === 'ALL'
-                  ? Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (parseInt(agent.AgentStatus) === 3) {
-                        return msToTime(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                        )
-                      }
-                    })
-                  : Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (parseInt(agent.AgentStatus) === 3 && agent.Queue === ServiceCode) {
-                        return msToTime(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                        )
-                      }
-                    })}
-              </tbody>
-            </table>
-          </Col>
-          <Col md={3}>
-            <table className="table table-sm border shadow-sm bg-light">
-              <thead>
-                <tr>
-                  <th
-                    colSpan="2"
-                    className="bg-danger text-light text-center"
-                    style={{ fontSize: '1.5rem', fontWeight: 'bold' }}
-                  >
-                    Not Ready Agent
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ServiceCode === 'ALL'
-                  ? Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-
-                      //console.log("agent.AgentTime: "+agent.AgentTime);
-                      //console.log("agent.AgentName: "+agent.AgentName);
-                      //console.log("agent.AgentCode: "+agent.AgentCode);
-                      //console.log("agent.AgentStatusCode: "+agent.AgentStatusCode);
-
-                      if (parseInt(agent.AgentStatus) === 4) {
-                        //return msToTimeFor4(agent.AgentTime, 'false', agent.AgentName, '', agent.AgentCode, agent.AgentStatusCode)
-                        return msToTimeFor4(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                          parseInt(agent.AgentStatusCode),
-                        )
-                      }
-                    })
-                  : Object.keys(OnlineAgentList).map((key) => {
-                      const agent = OnlineAgentList[key]
-                      if (
-                        parseInt(agent.AgentStatus) === 4 &&
-                        agent.Queue &&
-                        agent.Queue === ServiceCode
-                      ) {
-                        return msToTimeFor4(
-                          agent.AgentTime,
-                          'false',
-                          agent.AgentName,
-                          '',
-                          agent.AgentCode,
-                          agent.AgentStatusCode,
-                        )
-                      }
-                    })}
-              </tbody>
-            </table>
-          </Col>
+    <div style={{ backgroundColor: '#1d222b', padding: '20px' }}>
+      <Container className="mt-4">
+        <Row className="g-4">
+          {renderAgentTable('Available Agent', 1, statusStyles.available)}
+          {renderAgentTable('Active Agent', 2, statusStyles.active)}
+          {renderAgentTable('Wrap Agent', 3, statusStyles.wrap)}
+          {renderAgentTable('Not Ready Agent', 4, statusStyles.notReady)}
         </Row>
       </Container>
     </div>
