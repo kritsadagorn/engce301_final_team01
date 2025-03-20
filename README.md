@@ -58,6 +58,8 @@ Link to API Specification Documentation: [This Link](./docs/api/README.md).
 
 ## Work Breakdown Structure (WBS)
 
+![Backend Development](https://pic.in.th/image/1.KBLljh)
+
 ## Our Team
 
 - Team Leader นายกฤษฎากรณ์ ปุนนพานิช 65543206002-9
