@@ -59,6 +59,8 @@ Link to API Specification Documentation: [This Link](./docs/api/README.md).
 ## Work Breakdown Structure (WBS)
 ### Backend Development
 ![Backend Development](https://img2.pic.in.th/pic/1995660904cef8421.png)
+### Front Development
+![Front Development](https://img5.pic.in.th/file/secure-sv1/202315f6b12408996.png)
 
 ## Our Team
 
