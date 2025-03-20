@@ -56,6 +56,8 @@ Visit our website [This Link](https://lab-wb.cpe-rmutl.net/team01/).
 
 Link to API Specification Documentation: [This Link](./docs/api/README.md).
 
+## Work Breakdown Structure (WBS)
+
 ## Our Team
 
 - Team Leader นายกฤษฎากรณ์ ปุนนพานิช 65543206002-9
