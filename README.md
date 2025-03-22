@@ -1,7 +1,7 @@
 # ENGCE301 - Term Project
 
 This our Solution for Term Project in ENGCE301 <br/>
-Visit our website [This Link](https://lab-wb.cpe-rmutl.net/team01/).
+Visit our website [This Link](https://lab-wb.cpe-rmutl.net/team01/#/wallboard).
 
 ## Overview (Wallboard/Agent-Notifcation)
 
